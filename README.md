@@ -1,209 +1,179 @@
 # 🔒 YieldLock — ERC-20 Staking dApp
 
-A full-stack decentralized application (dApp) that implements **ERC-20 staking** with:
-- **Rewards for long-term holders**
-- **Penalties for early withdrawals**
-- **Secure contract design**
-- **React frontend** for seamless user interaction
+> A next-generation DeFi staking protocol that rewards long-term ERC-20 token holders while penalizing early withdrawals — built with Solidity, Foundry, and Next.js.
 
-Deployed and tested on the **Sepolia testnet**.
+[![Solidity](https://img.shields.io/badge/Solidity-0.8.24-363636?style=flat&logo=solidity)](https://soliditylang.org/)
+[![Foundry](https://img.shields.io/badge/Built%20with-Foundry-000000?style=flat)](https://book.getfoundry.sh/)
+[![Next.js](https://img.shields.io/badge/Frontend-Next.js%2014-000000?style=flat&logo=next.js)](https://nextjs.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
----
-
-## 📖 Table of Contents
-- [🔒 YieldLock — ERC-20 Staking dApp](#-yieldlock--erc-20-staking-dapp)
-  - [📖 Table of Contents](#-table-of-contents)
-  - [🔎 Overview](#-overview)
-  - [✨ Features](#-features)
-  - [🏗 Architecture](#-architecture)
-  - [📈 Tokenomics](#-tokenomics)
-  - [🧰 Tech Stack](#-tech-stack)
-  - [📂 Project Structure](#-project-structure)
-  - [🔐 Smart Contract Design](#-smart-contract-design)
-  - [🎨 Frontend Design](#-frontend-design)
-  - [⚙️ Installation](#️-installation)
-    - [Backend](#backend)
-    - [Frontend](#frontend)
-  - [🚀 Usage](#-usage)
-  - [✅ Testing](#-testing)
-  - [🚢 Deployment](#-deployment)
-  - [🛡 Security Considerations](#-security-considerations)
-  - [🔮 Future Enhancements](#-future-enhancements)
-  - [📜 License](#-license)
-  - [🙏 Acknowledgements](#-acknowledgements)
+**Live Demo:** Coming Soon | **Deployed on:** Sepolia Testnet
 
 ---
 
-## 🔎 Overview
-YieldLock is a staking system where users can **stake ERC-20 tokens** and earn rewards over time.  
-Early withdrawals apply penalties, aligning incentives for **long-term holding**.  
+## 🌟 What is YieldLock?
 
-This project demonstrates:
-- **Smart contract tokenomics** (Solidity, Foundry)  
-- **Frontend dApp** (React/Next.js + wagmi + RainbowKit)  
-- **Testnet deployment** (Sepolia)  
+**YieldLock** is a decentralized finance (DeFi) protocol that enables users to stake ERC-20 tokens and earn rewards based on lock duration. The longer the lock period, the higher the APY. Early withdrawals trigger a penalty, creating a trustless, incentive-aligned staking mechanism entirely governed by smart contracts.
+
+It’s like a **“crypto time deposit”** — but without banks, paperwork, or intermediaries.
 
 ---
 
-## ✨ Features
-- Stake ERC-20 tokens with time-based rewards
-- Early withdrawal penalties (configurable)
-- Multiple stake positions per user
-- Admin-configurable parameters (APY, penalties, lock durations)
-- Wallet integration (MetaMask, WalletConnect)
-- Frontend dashboard for staking, claiming, and tracking rewards
+## ✨ Core Features
+
+- ⏱️ **Time-Based Staking:** Choose from five lock durations with increasing APYs.  
+- 📈 **Dynamic Rewards:** Real-time reward accrual based on staking duration.  
+- 🔄 **Flexible Claiming:** Claim earned rewards anytime without unstaking.  
+- 🛡️ **Security-First Contracts:** Built with OpenZeppelin libraries and protected against reentrancy.  
+- 🧑‍💼 **Admin Controls:** Update APY, penalties, and lock terms without redeploying.  
+- 📊 **Detailed Analytics:** View positions, rewards, penalties, and history from a responsive dashboard.  
 
 ---
 
-## 🏗 Architecture
-- **Backend (Foundry)**:  
-  - `Token.sol` → ERC-20 contract  
-  - `Staking.sol` → staking mechanics  
-  - Tests written in Solidity (`forge test`)  
-  - Deployment scripts (`forge script`)  
+## 🏗️ System Architecture (Overview)
 
-- **Frontend (Next.js)**:  
-  - Wallet connection (wagmi + RainbowKit)  
-  - Contract interaction (ethers.js/viem)  
-  - Dashboard UI for user balances and rewards  
+YieldLock uses a modular, full-stack design for scalability and maintainability:
 
-- **Testnet**: Sepolia (supported until ~2026)  
-
----
-
-## 📈 Tokenomics
-- **Reward rate**: APR/APY per lock tier  
-- **Penalty**: applied if unstaking before lock expires  
-- **Treasury**: penalties redirected to treasury or burned  
-- **Lock tiers**: configurable (flex, 30d, 90d, 180d, 365d)  
-
----
-
-## 🧰 Tech Stack
-- **Smart Contracts**: Solidity (0.8.24+), Foundry (Forge, Cast, Anvil)  
-- **Frontend**: React, Next.js, wagmi, RainbowKit, ethers.js/viem  
-- **Contracts Security**: OpenZeppelin (ERC-20, ReentrancyGuard)  
-- **Deployment**: Sepolia testnet (Alchemy/Infura RPC)  
-
----
-
-## 📂 Project Structure
 ```
-yieldlock/
-│── src/              # contracts
-│── test/             # tests
-│── script/           # deployment
-│── frontend/         # Next.js frontend
-│── foundry.toml
-│── README.md
+┌───────────────────────────────────────────────┐
+│                  Frontend (Next.js)           │
+│  Wallet Connection │ Dashboard │ Admin Panel  │
+└───────────────────────────────────────────────┘
+                      │
+                      ▼
+┌───────────────────────────────────────────────┐
+│           Web3 Integration Layer              │
+│ wagmi + RainbowKit + viem + TanStack Query    │
+└───────────────────────────────────────────────┘
+                      │
+                      ▼
+┌───────────────────────────────────────────────┐
+│              Ethereum Blockchain              │
+│ Token.sol │ Staking.sol │ IStaking.sol        │
+└───────────────────────────────────────────────┘
 ```
 
----
-
-## 🔐 Smart Contract Design
-- **Reward Index**: tracks earned rewards efficiently  
-- **Penalty Calculation**: `penalty = (amount * penaltyBps) / 10000` if unstaked early  
-- **Security**:
-  - ReentrancyGuard
-  - Checks-Effects-Interactions pattern
-  - Pausable/Ownable for admin  
-- **Events**: `Staked`, `Claimed`, `Unstaked`, `PenaltyApplied`  
+📘 For detailed architecture and code explanations, see [Technical Overview](./docs/technical-overview.md).
 
 ---
 
-## 🎨 Frontend Design
-- Built with **Next.js** + **TailwindCSS**  
-- Wallet connection via **RainbowKit**  
-- Contract hooks via **wagmi** + **ethers.js/viem**  
-- Components:
-  - **StakeForm** → input amount, choose lock tier  
-  - **Dashboard** → view current stakes, rewards, penalties  
-  - **ClaimButton** → claim available rewards  
+## 💰 Staking Tiers
+
+| Lock Period | APY | Early Withdrawal Penalty |
+|------------|-----|--------------------------|
+| Flexible   | 0%  | 0%                       |
+| 30 Days    | 5%  | 2%                       |
+| 90 Days    | 8%  | 5%                       |
+| 180 Days   | 12% | 8%                       |
+| 365 Days   | 18% | 12%                      |
+
+📊 More on reward calculation: [Tokenomics](./docs/tokenomics.md)
 
 ---
 
-## ⚙️ Installation
+## ⚙️ Getting Started
 
-### Backend
+### 🧰 Prerequisites
+
+- Node.js ≥ 18  
+- Foundry (Forge, Cast, Anvil)  
+- MetaMask wallet  
+- Infura or Alchemy RPC URL
+
+---
+
+### 🧪 Installation
+
 ```bash
-# Install Foundry
-curl -L https://foundry.paradigm.xyz | bash
-foundryup
+git clone https://github.com/atahabilder1/yield-lock.git
+cd yield-lock
 
-# Clone project
-git clone https://github.com/yourusername/yieldlock.git
-cd yieldlock
-
-# Install dependencies
-forge install OpenZeppelin/openzeppelin-contracts --no-commit
+forge install
+npm install
 ```
 
-### Frontend
+Create a `.env` file:
+
+```bash
+cp .env.example .env
+nano .env
+```
+
+---
+
+### 🚀 Local Development
+
+Run a local blockchain and deploy contracts:
+
+```bash
+anvil
+forge test -vv
+forge script script/DeployStaking.s.sol --rpc-url http://localhost:8545 --broadcast
+```
+
+Run the frontend:
+
 ```bash
 cd frontend
-npm install
 npm run dev
 ```
 
----
-
-## 🚀 Usage
-1. Deploy Token + Staking contracts (Sepolia)  
-   ```bash
-   forge script script/DeployStaking.s.sol --rpc-url $SEPOLIA_RPC --private-key $PRIVATE_KEY --broadcast
-   ```
-2. Start frontend
-   ```bash
-   cd frontend
-   npm run dev
-   ```
-3. Open [http://localhost:3000](http://localhost:3000)  
+Visit → [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## ✅ Testing
+## 🛡️ Security Highlights
+
+- ✅ **ReentrancyGuard** – Prevents reentrancy attacks  
+- ✅ **Checks-Effects-Interactions** – Safe external calls  
+- ✅ **Access Control** – Owner-only critical functions  
+- ✅ **Emergency Controls** – System-wide pause and emergency withdrawals  
+
+See [SECURITY.md](./SECURITY.md) for full details and our bug bounty program.
+
+---
+
+## 🧪 Testing & Validation
+
+Comprehensive test suite:
+
 ```bash
 forge test -vv
-```
-Covers:
-- Stake → Claim → Unstake
-- Early withdrawal penalties
-- Multiple positions
-- Admin parameter updates
-
----
-
-## 🚢 Deployment
-Deploy to Sepolia:
-```bash
-forge script script/DeployStaking.s.sol --rpc-url $SEPOLIA_RPC --private-key $PRIVATE_KEY --broadcast
+forge test --gas-report
 ```
 
----
-
-## 🛡 Security Considerations
-- SafeERC20 + ReentrancyGuard  
-- Avoid block.timestamp manipulation (use reasonable lock times)  
-- Penalties configurable by governance only  
-- Consider adding a timelock for parameter changes  
+- 39+ tests across Token and Staking contracts  
+- 100% smart contract coverage  
+- Fuzz testing for edge cases  
+- Gas usage reporting and optimization checks
 
 ---
 
-## 🔮 Future Enhancements
-- NFT positions (ERC-721 stakes)  
-- Auto-compounding vault  
-- DAO governance for parameters  
-- Subgraph for analytics  
+## 🔮 Roadmap
+
+- 🏛️ DAO governance for parameter management  
+- 📱 Native iOS/Android apps  
+- 🌉 Multi-chain support (Polygon, Arbitrum, Base)  
+- 🪙 NFT-based staking positions  
+- 🤖 AI-powered APY optimization
+
+See the full vision: [Technical Overview → Roadmap](./docs/technical-overview.md#-future-roadmap)
+
+---
+
+## 📚 Full Documentation
+
+- 📘 [Technical Overview](./docs/technical-overview.md)  
+- 🚀 [Deployment Guide](./docs/deployment-guide.md)  
+- 🎨 [Frontend Architecture](./docs/frontend-architecture.md)  
+- 📊 [Tokenomics](./docs/tokenomics.md)
 
 ---
 
 ## 📜 License
-MIT License — free to use with attribution.  
+
+This project is released under the [MIT License](https://opensource.org/licenses/MIT).
 
 ---
 
-## 🙏 Acknowledgements
-- [Foundry](https://book.getfoundry.sh/)  
-- [OpenZeppelin](https://openzeppelin.com/contracts/)  
-- [RainbowKit](https://www.rainbowkit.com/)  
-- [wagmi](https://wagmi.sh/)  
+**Built with ❤️ by [Anik Tahabilder](https://github.com/atahabilder1)**  
